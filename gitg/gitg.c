@@ -11,6 +11,8 @@
 #include "sexy-icon-entry.h"
 #include "config.h"
 #include "gitg-settings.h"
+#include "gitg-preferences.h"
+#include "gitg-data-binding.h"
 
 static gboolean commit_mode = FALSE;
 
@@ -99,6 +101,72 @@ set_style_scheme_search_path()
 	gtk_source_style_scheme_manager_prepend_search_path(manager, GITG_DATADIR "/styles");
 }
 
+static gboolean
+convert_mask_to_bool(GValue const *mask, GValue *boolean, gpointer m)
+{
+	g_return_val_if_fail(G_VALUE_HOLDS(mask, G_TYPE_INT), FALSE);
+	g_return_val_if_fail(G_VALUE_HOLDS(boolean, G_TYPE_BOOLEAN), FALSE);
+
+	gint mv = g_value_get_int(mask);
+	
+	g_value_set_boolean(boolean, mv & GPOINTER_TO_INT(m));
+	return TRUE;
+}
+
+static void
+bind_style(GtkSourceStyleScheme *scheme, gchar const *name)
+{
+	GitgPreferences *preferences = gitg_preferences_get_default();
+	
+	gchar *stylename = g_strconcat("gitgdiff:", name, NULL);
+	GtkSourceStyle *style = gtk_source_style_scheme_get_style(scheme, stylename);
+	g_free(stylename);
+	
+	gchar *cmb = g_strconcat(name, "-foreground", NULL);
+	gitg_data_binding_new(preferences, cmb,
+						  style, "foreground");
+	g_free(cmb);
+	
+	cmb = g_strconcat(name, "-background", NULL);
+	gitg_data_binding_new(preferences, cmb,
+						  style, "background");
+	gitg_data_binding_new(preferences, cmb,
+						  style, "line-background");
+	g_free(cmb);
+	
+	cmb = g_strconcat(name, "-style", NULL);
+	gitg_data_binding_new_full(preferences, cmb,
+							   style, "bold",
+							   convert_mask_to_bool,
+							   GINT_TO_POINTER(GITG_PREFERENCES_STYLE_BOLD));
+	gitg_data_binding_new_full(preferences, cmb,
+							   style, "italic",
+							   convert_mask_to_bool,
+							   GINT_TO_POINTER(GITG_PREFERENCES_STYLE_ITALIC));
+	gitg_data_binding_new_full(preferences, cmb,
+							   style, "underline",
+							   convert_mask_to_bool,
+							   GINT_TO_POINTER(GITG_PREFERENCES_STYLE_UNDERLINE));
+	gitg_data_binding_new_full(preferences, cmb,
+							   style, "line-background-set",
+							   convert_mask_to_bool,
+							   GINT_TO_POINTER(GITG_PREFERENCES_STYLE_LINE_BACKGROUND));
+	g_free(cmb);
+}
+
+static void
+initialize_style_bindings()
+{
+	GtkSourceStyleSchemeManager *manager = gtk_source_style_scheme_manager_get_default();
+	GtkSourceStyleScheme *scheme = gtk_source_style_scheme_manager_get_scheme(manager, "gitg");
+
+	gchar const *names[] = {"text", "added-line", "removed-line", "changed-line", "header", "hunk", "trailing-spaces"};
+	guint i;
+	
+	for (i = 0; i < sizeof(names) / sizeof(gchar *); ++i)
+		bind_style(scheme, names[i]);
+}
+
 static void
 set_icons()
 {
@@ -150,6 +218,7 @@ main(int argc, char **argv)
 	
 	set_language_search_path();
 	set_style_scheme_search_path();
+	initialize_style_bindings();
 	set_icons();
 
 	GitgSettings *settings = gitg_settings_get_default();
