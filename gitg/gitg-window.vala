@@ -22,12 +22,20 @@ namespace Gitg
 
 public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable, Gtk.Buildable
 {
+	private enum ViewType
+	{
+		DASH = 0,
+		REPOSITORY = 1
+	}
+
 	private Repository? d_repository;
 	private GitgExt.MessageBus d_message_bus;
 	private string? d_action;
 
 	private UIElements<GitgExt.View> d_views;
 	private UIElements<GitgExt.Panel> d_panels;
+
+	private Gtk.Notebook d_notebook;
 
 	private Gtk.MenuButton d_config;
 
@@ -61,6 +69,8 @@ public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable, Gtk.
 	private void parser_finished(Gtk.Builder builder)
 	{
 		// Extract widgets from the builder
+		d_notebook = builder.get_object("notebook") as Gtk.Notebook;
+
 		d_toolbar_views = builder.get_object("toolbar_views") as Gtk.Toolbar;
 		d_paned_views = builder.get_object("paned_views") as Gtk.Paned;
 
@@ -107,25 +117,34 @@ public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable, Gtk.
 
 	private void activate_default_view()
 	{
-		d_views.foreach((element) => {
-			GitgExt.View view = (GitgExt.View)element;
+		if (d_repository == null)
+		{
+			d_notebook.set_current_page(ViewType.DASH);
+		}
+		else
+		{
+			d_notebook.set_current_page(ViewType.REPOSITORY);
 
-			if (view.is_default_for(d_action != null ? d_action : ""))
-			{
-				if (d_views.current == view)
+			d_views.foreach((element) => {
+				GitgExt.View view = (GitgExt.View)element;
+
+				if (view.is_default_for(d_action != null ? d_action : ""))
 				{
-					on_view_activated(d_views, view);
-				}
-				else
-				{
-					d_views.current = view;
+					if (d_views.current == view)
+					{
+						on_view_activated(d_views, view);
+					}
+					else
+					{
+						d_views.current = view;
+					}
+
+					return false;
 				}
 
-				return false;
-			}
-
-			return true;
-		});
+				return true;
+			});
+		}
 	}
 
 	private bool init(Cancellable? cancellable)
