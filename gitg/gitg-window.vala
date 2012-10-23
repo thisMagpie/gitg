@@ -36,6 +36,7 @@ public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable, Gtk.
 	private UIElements<GitgExt.Panel> d_panels;
 
 	private Gtk.Notebook d_notebook;
+	private GitgGtk.DashView d_dash_view;
 
 	private Gtk.MenuButton d_config;
 
@@ -70,6 +71,7 @@ public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable, Gtk.
 	{
 		// Extract widgets from the builder
 		d_notebook = builder.get_object("notebook") as Gtk.Notebook;
+		d_dash_view = builder.get_object("dash_view") as GitgGtk.DashView;
 
 		d_toolbar_views = builder.get_object("toolbar_views") as Gtk.Toolbar;
 		d_paned_views = builder.get_object("paned_views") as Gtk.Paned;
