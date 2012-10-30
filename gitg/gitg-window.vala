@@ -62,16 +62,29 @@ public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable, Gtk.
 		owned get { return d_message_bus; }
 	}
 
+	[Notify]
 	public Repository? repository
 	{
 		owned get { return d_repository; }
+		set
+		{
+			close();
+			d_repository = value;
+
+			repository_changed();
+		}
+	}
+
+	private void repository_changed()
+	{
+		d_views.update();
+		activate_default_view();
 	}
 
 	private void parser_finished(Gtk.Builder builder)
 	{
 		// Extract widgets from the builder
 		d_notebook = builder.get_object("notebook") as Gtk.Notebook;
-		d_dash_view = builder.get_object("dash_view") as GitgGtk.DashView;
 
 		d_toolbar_views = builder.get_object("toolbar_views") as Gtk.Toolbar;
 		d_paned_views = builder.get_object("paned_views") as Gtk.Paned;
@@ -84,6 +97,11 @@ public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable, Gtk.
 
 		d_navigation = builder.get_object("tree_view_navigation") as GitgExt.NavigationTreeView;
 		d_config = builder.get_object("button_config") as Gtk.MenuButton;
+
+		d_dash_view = builder.get_object("dash_view") as GitgGtk.DashView;
+		d_dash_view.repository_activated.connect((repository) => {
+			this.repository = repository;
+		});
 
 		var model = Resource.load_object<MenuModel>("ui/gitg-menus.ui", "win-menu");
 		d_config.menu_model = model;
@@ -110,6 +128,7 @@ public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable, Gtk.
 
 		// Update panels
 		d_panels.update();
+		notify_property("current_view");
 	}
 
 	private void on_panel_activated(UIElements elements,
@@ -187,8 +206,8 @@ public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable, Gtk.
 
 		if (ret != null)
 		{
-			ret.d_repository = repository;
 			ret.d_action = action;
+			ret.d_repository = repository;
 		}
 
 		try
@@ -196,6 +215,7 @@ public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable, Gtk.
 			((Initable)ret).init(null);
 		} catch {}
 
+		ret.repository_changed();
 		return ret;
 	}
 
@@ -222,6 +242,7 @@ public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable, Gtk.
 	public void open(File path)
 	{
 		File repo;
+		Gitg.Repository? repository = null;
 
 		if (d_repository != null &&
 		    d_repository.get_location().equal(path))
@@ -239,19 +260,13 @@ public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable, Gtk.
 			return;
 		}
 
-		if (d_repository != null)
-		{
-			close();
-		}
-
 		try
 		{
-			d_repository = new Gitg.Repository(repo, null);
-			notify_property("repository");
+			repository = new Gitg.Repository(repo, null);
 		}
 		catch {}
 
-		d_views.update();
+		this.repository = repository;
 	}
 
 	public void create(File path)
