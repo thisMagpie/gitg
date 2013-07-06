@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="GitgHeaderBar" parent="Gtk.HeaderBar">
+    <child>
+      <object class="GtkButton" id="d_dash_button">
+        <property name="visible">False</property>
+        <property name="valign">center</property>
+        <property name="can_focus">False</property>
+        <signal name="clicked" handler="dash_button_clicked" swapped="no"/>
+        <style>
+          <class name="image-button"/>
+        </style>
+        <child>
+          <object class="GtkImage" id="dash_image">
+            <property name="visible">True</property>
+            <property name="icon_size">1</property>
+            <property name="icon_name">go-previous-symbolic</property>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="pack_type">start</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkToggleButton" id="d_search_button">
+        <property name="visible">True</property>
+        <property name="valign">center</property>
+        <property name="can_focus">False</property>
+        <property name="action_name">win.search</property>
+        <style>
+          <class name="image-button"/>
+        </style>
+        <child>
+          <object class="GtkImage" id="search_image">
+            <property name="visible">True</property>
+            <property name="icon_size">1</property>
+            <property name="icon_name">edit-find-symbolic</property>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="pack_type">end</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkStackSwitcher" id="d_activities_switcher">
+        <property name="visible">False</property>
+      </object>
+      <packing>
+        <property name="pack_type">end</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkMenuButton" id="d_gear_menu">
+        <property name="visible">True</property>
+        <property name="valign">center</property>
+        <property name="can_focus">False</property>
+        <property name="action_name">win.gear-menu</property>
+        <style>
+          <class name="image-button"/>
+        </style>
+        <child>
+          <object class="GtkImage" id="gear_image">
+            <property name="visible">True</property>
+            <property name="icon_size">1</property>
+            <property name="icon_name">emblem-system-symbolic</property>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="pack_type">end</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkSeparator" id="close_button_separator">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <property name="valign">fill</property>
+      </object>
+      <packing>
+        <property name="pack_type">end</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkButton" id="d_close_button">
+        <property name="visible">True</property>
+        <property name="valign">center</property>
+        <property name="relief">none</property>
+        <signal name="clicked" handler="close_button_clicked" swapped="no"/>
+        <style>
+          <class name="image-button"/>
+        </style>
+        <child>
+          <object class="GtkImage" id="close_image">
+            <property name="visible">True</property>
+            <property name="icon_size">1</property>
+            <property name="icon_name">window-close-symbolic</property>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="pack_type">end</property>
+      </packing>
+    </child>
+  </template>
+</interface>

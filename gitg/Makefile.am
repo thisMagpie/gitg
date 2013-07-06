@@ -37,6 +37,7 @@ AM_VALAFLAGS = \
 VALASOURCES =							\
 	gitg.vala						\
 	gitg-dirs.vala						\
+	gitg-header-bar.vala					\
 	gitg-window.vala					\
 	gitg-resource.vala					\
 	gitg-application.vala					\

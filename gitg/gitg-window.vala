@@ -35,20 +35,7 @@ public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable
 
 	// Widgets
 	[GtkChild]
-	private Gtk.HeaderBar d_header_bar;
-	[GtkChild]
-	private Gtk.ToggleButton d_search_button;
-	[GtkChild]
-	private Gtk.MenuButton d_gear_menu;
-	private MenuModel d_dash_model;
-	private MenuModel d_activities_model;
-
-
-
-	[GtkChild]
-	private Gtk.Button d_dash_button;
-	[GtkChild]
-	private Gtk.StackSwitcher d_activities_switcher;
+	private Gitg.HeaderBar d_header_bar;
 
 	[GtkChild]
 	private Gtk.SearchBar d_search_bar;
@@ -89,31 +76,6 @@ public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable
 	};
 
 	[GtkCallback]
-	private void close_button_clicked(Gtk.Button button)
-	{
-		close();
-	}
-
-	[GtkCallback]
-	private void dash_button_clicked(Gtk.Button dash)
-	{
-		repository = null;
-	}
-
-	[GtkCallback]
-	private void search_button_toggled(Gtk.ToggleButton button)
-	{
-		if (button.get_active())
-		{
-			d_search_entry.grab_focus();
-		}
-		else
-		{
-			d_search_entry.set_text("");
-		}
-	}
-
-	[GtkCallback]
 	private void search_entry_changed(Gtk.Editable entry)
 	{
 		// FIXME: this is a weird way to know the dash is visible
@@ -136,25 +98,23 @@ public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable
 		d_main_settings = new Settings("org.gnome.gitg.preferences.main");
 		d_interface_settings = new Settings("org.gnome.gitg.preferences.interface");
 
-		string menuname;
-
-		if (Gtk.Settings.get_default().gtk_shell_shows_app_menu)
-		{
-			menuname = "win-menu";
-		}
-		else
-		{
-			menuname = "app-win-menu";
-		}
-
-		d_dash_model = Resource.load_object<MenuModel>("ui/gitg-menus.ui", menuname + "-dash");
-		d_activities_model = Resource.load_object<MenuModel>("ui/gitg-menus.ui", menuname + "-views");
-
 		// search bar
 		d_search_bar.connect_entry(d_search_entry);
-		d_search_button.bind_property("active", d_search_bar, "search-mode-enabled", BindingFlags.BIDIRECTIONAL);
-
-		d_activities_switcher.set_stack(d_stack_activities);
+		d_header_bar.get_search_button().bind_property("active", d_search_bar, "search-mode-enabled", BindingFlags.BIDIRECTIONAL);
+		d_header_bar.get_search_button().toggled.connect((b) => {
+			if (b.get_active())
+			{
+				d_search_entry.grab_focus();
+			}
+			else
+			{
+				d_search_entry.set_text("");
+			}
+		});
+		d_header_bar.get_activities_switcher().set_stack(d_stack_activities);
+		d_header_bar.request_dash.connect(() => {
+			repository = null;
+		});
 
 		d_environment = new Gee.HashMap<string, string>();
 
@@ -239,13 +199,10 @@ public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable
 			catch {}
 
 			d_header_bar.set_subtitle(Markup.escape_text(head_name));
-
 			d_main_stack.transition_type = Gtk.StackTransitionType.SLIDE_LEFT;
 			d_main_stack.set_visible_child(d_stack_activities);
-			d_activities_switcher.show();
-			d_dash_button.show();
 			d_dash_view.add_repository(d_repository);
-			d_gear_menu.menu_model = d_activities_model;
+			d_header_bar.mode = HeaderBar.Mode.ACTIVITIES;
 		}
 		else
 		{
@@ -256,9 +213,7 @@ public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable
 
 			d_main_stack.transition_type = Gtk.StackTransitionType.SLIDE_RIGHT;
 			d_main_stack.set_visible_child(d_dash_scrolled_window);
-			d_activities_switcher.hide();
-			d_dash_button.hide();
-			d_gear_menu.menu_model = d_dash_model;
+			d_header_bar.mode = HeaderBar.Mode.DASH;
 		}
 
 		d_activities.update();
