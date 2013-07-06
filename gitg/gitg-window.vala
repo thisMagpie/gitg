@@ -116,9 +116,11 @@ public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable
 		});
 		d_header_bar.request_commit.connect(() => {
 			d_header_bar.mode = HeaderBar.Mode.COMMIT;
+			d_stack_activities.set_visible_child_name("/org/gnome/gitg/Activities/Commit");
 		});
 		d_header_bar.exit_mode.connect(() => {
 			d_header_bar.mode = HeaderBar.Mode.ACTIVITIES;
+			d_stack_activities.set_visible_child_name("/org/gnome/gitg/Activities/History");
 		});
 
 		d_environment = new Gee.HashMap<string, string>();
