@@ -42,7 +42,19 @@
       </packing>
     </child>
     <child>
-      <object class="GtkStackSwitcher" id="d_activities_switcher">
+      <object class="GtkButton" id="d_commit_button">
+        <property name="valign">center</property>
+        <signal name="clicked" handler="commit_button_clicked" swapped="no"/>
+        <style>
+          <class name="image-button"/>
+        </style>
+        <child>
+          <object class="GtkImage" id="commit_image">
+            <property name="visible">True</property>
+            <property name="icon_size">1</property>
+            <property name="icon_name">document-save-symbolic</property>
+          </object>
+        </child>
       </object>
       <packing>
         <property name="pack_type">end</property>

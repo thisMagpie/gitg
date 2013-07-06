@@ -111,9 +111,11 @@ public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable
 				d_search_entry.set_text("");
 			}
 		});
-		d_header_bar.get_activities_switcher().set_stack(d_stack_activities);
 		d_header_bar.request_dash.connect(() => {
 			repository = null;
+		});
+		d_header_bar.request_commit.connect(() => {
+			d_header_bar.mode = HeaderBar.Mode.COMMIT;
 		});
 		d_header_bar.exit_mode.connect(() => {
 			d_header_bar.mode = HeaderBar.Mode.ACTIVITIES;

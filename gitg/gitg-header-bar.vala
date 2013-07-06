@@ -35,8 +35,9 @@ public class HeaderBar : Gtk.HeaderBar
 
 	[GtkChild]
 	private Gtk.ToggleButton d_search_button;
+
 	[GtkChild]
-	private Gtk.StackSwitcher d_activities_switcher;
+	private Gtk.Button d_commit_button;
 
 	[GtkChild]
 	private Gtk.Button d_done_button;
@@ -47,6 +48,7 @@ public class HeaderBar : Gtk.HeaderBar
 	private Gtk.Button d_close_button;
 
 	public signal void request_dash();
+	public signal void request_commit();
 	public signal void exit_mode();
 
 	public enum Mode
@@ -71,7 +73,7 @@ public class HeaderBar : Gtk.HeaderBar
 				d_gear_menu.hide();
 				d_dash_button.hide();
 				d_search_button.hide();
-				d_activities_switcher.hide();
+				d_commit_button.hide();
 				d_close_button_separator.hide();
 				d_close_button.hide();
 				d_done_button.show();
@@ -91,13 +93,13 @@ public class HeaderBar : Gtk.HeaderBar
 			{
 				d_gear_menu.menu_model = d_dash_model;
 				d_dash_button.hide();
-				d_activities_switcher.hide();
+				d_commit_button.hide();
 			}
 			else if (d_mode == Mode.ACTIVITIES)
 			{
 				d_gear_menu.menu_model = d_activities_model;
 				d_dash_button.show();
-				d_activities_switcher.show();
+				d_commit_button.show();
 			}
 
 			notify_property("mode");
@@ -123,6 +125,12 @@ public class HeaderBar : Gtk.HeaderBar
 		exit_mode();
 	}
 
+	[GtkCallback]
+	private void commit_button_clicked(Gtk.Button button)
+	{
+		request_commit();
+	}
+
 	construct
 	{
 		string menuname;
@@ -143,11 +151,6 @@ public class HeaderBar : Gtk.HeaderBar
 	public Gtk.ToggleButton get_search_button()
 	{
 		return d_search_button;
-	}
-
-	public Gtk.StackSwitcher get_activities_switcher()
-	{
-		return d_activities_switcher;
 	}
 }
 
