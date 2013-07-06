@@ -3,7 +3,6 @@
   <template class="GitgHeaderBar" parent="Gtk.HeaderBar">
     <child>
       <object class="GtkButton" id="d_dash_button">
-        <property name="visible">False</property>
         <property name="valign">center</property>
         <property name="can_focus">False</property>
         <signal name="clicked" handler="dash_button_clicked" swapped="no"/>
@@ -24,7 +23,6 @@
     </child>
     <child>
       <object class="GtkToggleButton" id="d_search_button">
-        <property name="visible">True</property>
         <property name="valign">center</property>
         <property name="can_focus">False</property>
         <property name="action_name">win.search</property>
@@ -45,7 +43,6 @@
     </child>
     <child>
       <object class="GtkStackSwitcher" id="d_activities_switcher">
-        <property name="visible">False</property>
       </object>
       <packing>
         <property name="pack_type">end</property>
@@ -53,7 +50,6 @@
     </child>
     <child>
       <object class="GtkMenuButton" id="d_gear_menu">
-        <property name="visible">True</property>
         <property name="valign">center</property>
         <property name="can_focus">False</property>
         <property name="action_name">win.gear-menu</property>
@@ -73,8 +69,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkSeparator" id="close_button_separator">
-        <property name="visible">True</property>
+      <object class="GtkSeparator" id="d_close_button_separator">
         <property name="orientation">vertical</property>
         <property name="valign">fill</property>
       </object>
@@ -84,7 +79,6 @@
     </child>
     <child>
       <object class="GtkButton" id="d_close_button">
-        <property name="visible">True</property>
         <property name="valign">center</property>
         <property name="relief">none</property>
         <signal name="clicked" handler="close_button_clicked" swapped="no"/>

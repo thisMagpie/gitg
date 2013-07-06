@@ -38,6 +38,11 @@ public class HeaderBar : Gtk.HeaderBar
 	[GtkChild]
 	private Gtk.StackSwitcher d_activities_switcher;
 
+	[GtkChild]
+	private Gtk.Separator d_close_button_separator;
+	[GtkChild]
+	private Gtk.Button d_close_button;
+
 	public signal void request_dash();
 
 	public enum Mode
@@ -58,10 +63,22 @@ public class HeaderBar : Gtk.HeaderBar
 			if (d_mode == Mode.COMMIT)
 			{
 				get_style_context().add_class("selection-mode");
+
+				d_gear_menu.hide();
+				d_dash_button.hide();
+				d_search_button.hide();
+				d_activities_switcher.hide();
+				d_close_button_separator.hide();
+				d_close_button.hide();
 			}
 			else
 			{
 				get_style_context().remove_class("selection-mode");
+
+				d_gear_menu.show();
+				d_search_button.show();
+				d_close_button_separator.show();
+				d_close_button.show();
 			}
 
 			if (d_mode == Mode.DASH)
