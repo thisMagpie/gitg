@@ -115,6 +115,9 @@ public class Window : Gtk.ApplicationWindow, GitgExt.Application, Initable
 		d_header_bar.request_dash.connect(() => {
 			repository = null;
 		});
+		d_header_bar.exit_mode.connect(() => {
+			d_header_bar.mode = HeaderBar.Mode.ACTIVITIES;
+		});
 
 		d_environment = new Gee.HashMap<string, string>();
 

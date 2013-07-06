@@ -39,11 +39,15 @@ public class HeaderBar : Gtk.HeaderBar
 	private Gtk.StackSwitcher d_activities_switcher;
 
 	[GtkChild]
+	private Gtk.Button d_done_button;
+
+	[GtkChild]
 	private Gtk.Separator d_close_button_separator;
 	[GtkChild]
 	private Gtk.Button d_close_button;
 
 	public signal void request_dash();
+	public signal void exit_mode();
 
 	public enum Mode
 	{
@@ -70,6 +74,7 @@ public class HeaderBar : Gtk.HeaderBar
 				d_activities_switcher.hide();
 				d_close_button_separator.hide();
 				d_close_button.hide();
+				d_done_button.show();
 			}
 			else
 			{
@@ -79,6 +84,7 @@ public class HeaderBar : Gtk.HeaderBar
 				d_search_button.show();
 				d_close_button_separator.show();
 				d_close_button.show();
+				d_done_button.hide();
 			}
 
 			if (d_mode == Mode.DASH)
@@ -106,9 +112,15 @@ public class HeaderBar : Gtk.HeaderBar
 	}
 
 	[GtkCallback]
-	private void dash_button_clicked(Gtk.Button dash)
+	private void dash_button_clicked(Gtk.Button button)
 	{
 		request_dash();
+	}
+
+	[GtkCallback]
+	private void done_button_clicked(Gtk.Button button)
+	{
+		exit_mode();
 	}
 
 	construct

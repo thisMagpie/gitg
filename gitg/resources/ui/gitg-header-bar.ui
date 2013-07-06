@@ -69,6 +69,26 @@
       </packing>
     </child>
     <child>
+      <object class="GtkButton" id="d_done_button">
+        <property name="valign">center</property>
+        <property name="relief">none</property>
+        <signal name="clicked" handler="done_button_clicked" swapped="no"/>
+        <style>
+          <class name="text-button"/>
+          <class name="suggested-action"/>
+        </style>
+        <child>
+          <object class="GtkLabel" id="done_label">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Done</property>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="pack_type">end</property>
+      </packing>
+    </child>
+    <child>
       <object class="GtkSeparator" id="d_close_button_separator">
         <property name="orientation">vertical</property>
         <property name="valign">fill</property>
