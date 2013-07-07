@@ -83,7 +83,6 @@
     <child>
       <object class="GtkButton" id="d_done_button">
         <property name="valign">center</property>
-        <property name="relief">none</property>
         <signal name="clicked" handler="done_button_clicked" swapped="no"/>
         <style>
           <class name="text-button"/>
