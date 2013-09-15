@@ -70,6 +70,7 @@ namespace Gitg
 			stdout.printf("gitg path: %s\n", gitg_path);
 			stdout.printf("git path: %s\n", git_path);
 
+			// PBOR: you have calculated git_path, you may as well use it instead of hardcoding usr bin :)
 			string[] spawn_args = {"/usr/bin/git", "rebase", "-i", range};
 			string[] spawn_env = Environ.get ();
 			spawn_env = Environ.set_variable(spawn_env, "GIT_SEQUENCE_EDITOR", "%s --rebase".printf(gitg_path), true);
