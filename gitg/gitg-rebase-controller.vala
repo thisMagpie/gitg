@@ -23,31 +23,40 @@ namespace Gitg
 	{
 		private string output;
 		private string repo_path;
+
 		public RebaseController(string repository_path)
 		{
 			repo_path = repository_path;
 			output = "";
 		}
 
-		private static string process_line (IOChannel channel, IOCondition condition, string stream_name)
+		private static string process_line(IOChannel channel, IOCondition condition, string stream_name)
 		{
 			string streamoutput = "";
-			if (condition == IOCondition.HUP) {
+
+			if (condition == IOCondition.HUP)
+			{
 				streamoutput += "%s: The fd has been closed.\n".printf(stream_name);
 				return "";
 			}
 
-			try {
+			try
+			{
 				string line;
 				channel.read_line (out line, null, null);
 				streamoutput += "%s: %s".printf(stream_name, line);
-			} catch (IOChannelError e) {
+			}
+			catch (IOChannelError e)
+			{
 				streamoutput += "%s: IOChannelError: %s\n".printf(stream_name, e.message);
 				return "";
-			} catch (ConvertError e) {
+			}
+			catch (ConvertError e)
+			{
 				streamoutput += "%s: ConvertError: %s\n".printf(stream_name, e.message);
 				return "";
 			}
+
 			return streamoutput;
 		}
 
