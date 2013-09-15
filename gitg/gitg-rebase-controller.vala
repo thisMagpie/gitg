@@ -81,16 +81,23 @@ namespace Gitg
 			int standard_output;
 			int standard_error;
 
-			Process.spawn_async_with_pipes (repo_path,
-				spawn_args,
-				spawn_env,
-				SpawnFlags.SEARCH_PATH|SpawnFlags.DO_NOT_REAP_CHILD,
-				null,
-				out child_pid,
-				out standard_input,
-				out standard_output,
-				out standard_error
-			);
+			try
+			{
+				Process.spawn_async_with_pipes(repo_path,
+				                               spawn_args,
+				                               spawn_env,
+				                               SpawnFlags.SEARCH_PATH | SpawnFlags.DO_NOT_REAP_CHILD,
+				                               null,
+				                               out child_pid,
+				                               out standard_input,
+				                               out standard_output,
+				                               out standard_error);
+			}
+			catch (SpawnError e)
+			{
+				warning("Failed to spawn git rebase: %s".printf(e.message));
+				return;
+			}
 		
 			// stdout:
 			IOChannel iooutput = new IOChannel.unix_new (standard_output);
@@ -133,14 +140,22 @@ namespace Gitg
 			string ls_stderr;
 			int ls_status;
 
-			Process.spawn_sync (repo_path,
-								spawn_args,
-								spawn_env,
-								SpawnFlags.SEARCH_PATH,
-								null,
-								out ls_stdout,
-								out ls_stderr,
-								out ls_status);
+			try
+			{
+				Process.spawn_sync(repo_path,
+				                  spawn_args,
+				                  spawn_env,
+				                  SpawnFlags.SEARCH_PATH,
+				                  null,
+				                  out ls_stdout,
+				                  out ls_stderr,
+				                  out ls_status);
+			}
+			catch (SpawnError e)
+			{
+				warning("Failed to spawn git rebase --abort: %s".printf(e.message));
+				return;
+			}
 
 			// Output: <File list>
 			stdout.printf ("stdout:\n");
